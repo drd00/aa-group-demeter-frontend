@@ -17,5 +17,8 @@ module.exports = {
       'warn',
       { allowConstantExport: true },
     ],
+    semi: ['error', 'always'],
+    'no-unused-vars': ["warn", { "argsIgnorePattern": "^_", "varsIgnorePattern": "^_"}],
+    'quotes': [2, 'single', { 'avoidEscape': true }],
   },
 }
