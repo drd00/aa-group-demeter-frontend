@@ -1,8 +1,9 @@
-# React + Vite
+# Adaptive Applications Group Demeter Programming Project
+This is the repository for the Adaptive Applications group Demeter, using ReactJS. More specific details will be added here once an application idea has been decided upon.
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Setting it up
+There is a page in the repository wiki with instructions on setting everything up, including Firebase authentication. In short, `npm install` and `npm run dev` will install the necessary packages on your local machine and run the development server respectively.
 
-Currently, two official plugins are available:
+## Noteworthy packages used
+This project uses Recoil for managing global application state, a combination of TailwindCSS and Boostrap for styling and Google Firebase for user authentication.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
