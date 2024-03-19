@@ -10,10 +10,13 @@ const NavMenu = () => {
                 <div className='flex justify-between'>
                     <div className='flex space-x-4'>
                         <div>
-                            <Link to='/' className='flex items-center py-5 px-2 text-gray-200 hover:text-gray-400 no-underline'>Project Demeter</Link>
+                            <Link to='/' className='flex items-center py-5 px-2 text-gray-200 hover:text-gray-400 no-underline'>FitAssist</Link>
                         </div>
                         <div className='hidden md:flex items-center space-x-1'>
                             <Link to='/about' className='p6-5 px-3 hover:text-gray-400'>About</Link>
+                        </div>
+                        <div className='hidden md:flex items-center space-x-1'>
+                            <Link to='/profile' className='p6-5 px-3 hover:text-gray-400'>Profile</Link>
                         </div>
                     </div>
                     <div className='hidden md:flex items-center space-x-1'>
