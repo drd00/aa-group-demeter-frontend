@@ -5,8 +5,9 @@ import useAuthenticatedRequest from '../hooks/useAuthenticatedRequest';
 
 const HomePage = () => {
     const [searchTerm, setSearchTerm] = useState('');
-    const { data, loading, error, fetchData } = useAuthenticatedRequest();
+    const { _data, _loading, _error, fetchData } = useAuthenticatedRequest();
 
+    // fix this stuff
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (!searchTerm) {
