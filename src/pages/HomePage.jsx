@@ -19,14 +19,6 @@ const HomePage = () => {
         fetchData(url);
     };
 
-    /*
-        TODO:
-        1. Set searchHistory as fetched from the backend server initially ... fetch using axios and setSearchHistory whenever the page is loaded instead of updating the values locally as here.
-
-        2. Send a request to the backend to display information about a food item of interest, at the same time updating the user's search history table => use to tailor personalisation.
-
-        3. Have another list which displays the user's personalised suggestions based on their search history (obtained from backend application also).
-    */
    return (
         <div className='flex justify-center items-center pt-5'>
             <form onSubmit={handleSubmit} className='flex items-center space-x-2'>
