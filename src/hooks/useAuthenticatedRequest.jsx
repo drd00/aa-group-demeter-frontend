@@ -1,39 +1,41 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import firebase from 'firebase/app';
-import 'firebase/auth';
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
 
 const useAuthenticatedRequest = (url) => {
-    const [_data, setData] = useState(null);
-    const [_loading, setLoading] = useState(true);
-    const [_error, setError] = useState(null);
+    const [data, setData] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
-    useEffect(() => {
-        const fetchData = async () => {
-            setLoading(true);
+    const fetchData = async (url) => {
+        setLoading(true);
+        setError(null);
 
-            try {
-                const user = firebase.auth().currentUser;
-                if (!user) {
-                    throw new Error('User is not logged in');
-                }
+        try {
+            const auth = getAuth();
+            const user = auth.currentUser;
 
-                const idToken = await user.getIdToken(true);
-
-                const response = await axios.get(url, {
-                    headers: {
-                        Authorization: `Bearer ${idToken}`,
-                    },
-                });
-
-                setData(response.data);
-            } catch (error) {
-                setError(error.message);
-            } finally {
-                setLoading(false);
+            if (!user) {
+                throw new Error('User is not logged in');
             }
-        };
 
-        fetchData();
-    }, [url]);
+            const idToken = await user.getIdToken(true);
+
+            const response = await axios.get(url, {
+                headers: {
+                    Authorization: `Bearer ${idToken}`,
+                },
+            });
+
+            setData(response.data);
+        } catch (error) {
+            setError(error.message);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    return { data, loading, error, fetchData };
 };
+
+export default useAuthenticatedRequest;
