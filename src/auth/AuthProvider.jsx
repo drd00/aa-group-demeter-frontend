@@ -20,7 +20,7 @@ const AuthProvider = ( { children } ) => {
 
                 // Fetch user profile data
                 // use uid for keys in the backend DB
-                const url = 'http://localhost:5000/profile';
+                const url = 'http://localhost:8000/profile';
                 await fetchData(url);
 
                 if (data) {
