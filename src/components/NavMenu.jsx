@@ -2,7 +2,7 @@ import { userState as userAtom } from '../shared_state/Atoms';
 import { useRecoilState } from 'recoil';
 import { Link } from 'react-router-dom';
 
-const NavMenu = () => {
+const NavMenu = ({onLogout}) => {
     const [userState, _setUserState] = useRecoilState(userAtom);
     return (
         <>
@@ -27,7 +27,7 @@ const NavMenu = () => {
                             {userState && (
                                 <>
                                     <span className='text-xs text-gray-800'>{userState}</span>
-                                    <Link to='/auth' className='py-2 px-3 bg-gray-300 text-gray-800 border border-gray-400 rounded hover:bg-gray-400'>Sign out</Link>
+                                    <Link to='/auth' className='py-2 px-3 bg-gray-300 text-gray-800 border border-gray-400 rounded hover:bg-gray-400' onClick={onLogout}>Sign out</Link>
                                 </>
                             )}
                         </div>
