@@ -34,13 +34,18 @@ const SearchPage = () => {
     const handleSearchInputChange = (event) => {
         const query = event.target.value;
         setSearchQuery(query);
-        debouncedSearch(query);
+        //debouncedSearch(query);
+    };
+
+    const handleSearch = (e) => {
+        e.preventDefault();
+        debouncedSearch(searchQuery);
     };
 
     return (
         <div className="container mx-auto p-4">
             <h1 className="text-xl font-bold mb-4">Search for your favourite foods</h1>
-            <form onSubmit={(e) => e.preventDefault()} className="flex flex-col md:flex-row items-center gap-4">
+            <form onSubmit={handleSearch} className="flex flex-col md:flex-row items-center gap-4">
                 <input
                     className="flex-1 border-2 border-gray-200 p-2 rounded-md focus:outline-none focus:border-blue-500 transition-colors"
                     type="text"
