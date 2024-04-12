@@ -3,6 +3,7 @@ import AuthPage from './pages/AuthPage';
 import HomePage from './pages/HomePage';
 import SettingsPage from './pages/SettingsPage';
 import ProfilePage from './pages/ProfilePage';
+import SearchPage from './pages/SearchPage';
 import NavMenu from './components/NavMenu';
 import {signOut} from 'firebase/auth';
 import auth from './auth/FirebaseConfig.js';
@@ -40,6 +41,7 @@ function App() {
       <Route path='/auth' element={<AuthPage />} />
       <Route path='/settings' element={<SettingsPage />} />
       <Route path='/profile' element={<ProfilePage />} />
+      <Route path='/search' element={<SearchPage />} />
     </Routes>
   </>
   );
