@@ -1,8 +1,9 @@
 import { userState as userAtom } from '../shared_state/Atoms';
 import { useRecoilState } from 'recoil';
 import { Link } from 'react-router-dom';
+import PropTypes from 'prop-types';
 
-const NavMenu = ({onLogout}) => {
+const NavMenu = ({ onLogout }) => {
     const [userState, _setUserState] = useRecoilState(userAtom);
     return (
         <>
@@ -26,7 +27,7 @@ const NavMenu = ({onLogout}) => {
                             )}
                             {userState && (
                                 <>
-                                    <span className='text-xs text-gray-800'>{userState}</span>
+                                    <span className='text-xs text-gray-800'>{userState['email']}</span>
                                     <Link to='/auth' className='py-2 px-3 bg-gray-300 text-gray-800 border border-gray-400 rounded hover:bg-gray-400' onClick={onLogout}>Sign out</Link>
                                 </>
                             )}
@@ -36,6 +37,10 @@ const NavMenu = ({onLogout}) => {
             </nav>
         </>
     );
+};
+
+NavMenu.propTypes = {
+    onLogout: PropTypes.func.isRequired,
 };
 
 export default NavMenu;

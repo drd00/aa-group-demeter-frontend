@@ -6,7 +6,7 @@ import useAuthenticatedRequest from '../hooks/useAuthenticatedRequest';
 const HomePage = () => {
 
     const [searchTerm, setSearchTerm] = useState('');
-    const { _data, _loading, _error, fetchData } = useAuthenticatedRequest();
+    const { makeRequest } = useAuthenticatedRequest();
 
     const [diaryEntries, setDiaryEntries] = useState([]);
     useEffect(() => {
@@ -33,7 +33,14 @@ const HomePage = () => {
 
         // Send a request to the backend to display information about a food item of interest
         const url = `http://localhost:8000/api/searchfood/${encodeURIComponent(searchTerm)}`;
-        fetchData(url);
+
+        let response = await makeRequest(url, 'GET', null);
+
+        if (response.status === 200) {
+            console.log('Food item found:', response.data);
+            // Update the UI with the found food item
+            // setFoodItem(response.data);
+        }
     };
     const styles = {
         container: {

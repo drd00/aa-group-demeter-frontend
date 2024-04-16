@@ -3,19 +3,29 @@ import ProfileField from '../components/ProfileField';
 import { useRecoilState } from 'recoil';
 import { userState as userAtom } from '../shared_state/Atoms';
 import { profileDataState as profileAtom } from '../shared_state/Atoms';
+import useAuthenticatedRequest from '../hooks/useAuthenticatedRequest';
 
 const ProfilePage = () => {
     const [userState, _setUserState] = useRecoilState(userAtom);
     const [profileDataState, setProfileDataState] = useRecoilState(profileAtom);
     const [_isHovered, setIsHovered] = useState(false);
+    const { makeRequest } = useAuthenticatedRequest();
 
-    const handleUpdate = (field, newValue) => {
-        // setProfileDataState(prev => ({ ...prev, [field]: newValue }));
+    const handleUpdate = async (label, newValue) => {
+        const fieldMap = {
+            'First Name': 'firstName',
+            'Last Name': 'lastName',
+            'Age': 'age',
+            'Weight': 'weight',
+            'Goal Weight': 'goalWeight',
+            'Height': 'height',
+            'Activity Level': 'activityLevel',
+        };
 
-        // Send API call.
-        console.log(`Updating ${field} to ${newValue}`);
+        const field = fieldMap[label];
+        let response = await makeRequest('http://localhost:8000/profile', 'PUT', { [field]: newValue });
 
-        // if successful, update the state
+        setProfileDataState(prev => ({ ...prev, [field]: newValue }));
     };
 
     return (
@@ -23,19 +33,16 @@ const ProfilePage = () => {
             {
                 userState && (
                 <>
-                    <div className="max-w-4xl mx-auto p-4 flex-center">
-                        <div className="mt-6">
-                            <h2 className='text-lg font-semibold mb-4'>Hello, {userState}.</h2>
-                            <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
-                                <ProfileField label='First Name' value={profileDataState['First Name']} onModify={setIsHovered} onUpdate={handleUpdate} />
-                                <ProfileField label='Last Name' value={profileDataState['Last Name']} onModify={setIsHovered} onUpdate={handleUpdate}/>
-                                {/* <ProfileField label='Age' value={profileDataState['Age']} onModify={setIsHovered} onUpdate={handleUpdate}/>
-                                <ProfileField label='Weight' value={profileDataState['Weight']} onModify={setIsHovered} onUpdate={handleUpdate}/>
-                                <ProfileField label='Height' value={profileDataState['Height']} onModify={setIsHovered} onUpdate={handleUpdate}/>
-                                <ProfileField label='Goal Weight' value={profileDataState['Goal Weight']} onModify={setIsHovered} onUpdate={handleUpdate}/>
-                                <ProfileField label='Primary goal' value={profileDataState['Primary goal']} onModify={setIsHovered} onUpdate={handleUpdate}></ProfileField>
-                                <ProfileField label='Activity Level' value={profileDataState['Activity Level']} onModify={setIsHovered} onUpdate={handleUpdate}/> */}
-                                </div>
+                    <div className="max-w-4xl mx-auto p-4">
+                        <h2 className='text-lg font-semibold mb-4'>Hello, {profileDataState.firstName}.</h2>
+                        <div className='grid grid-cols-1 gap-1'>
+                            <ProfileField label='First Name' value={profileDataState['firstName']} onModify={setIsHovered} onUpdate={handleUpdate} />
+                            <ProfileField label='Last Name' value={profileDataState['lastName']} onModify={setIsHovered} onUpdate={handleUpdate} />
+                            <ProfileField label='Age' value={profileDataState['age']} onModify={setIsHovered} onUpdate={handleUpdate} />
+                            <ProfileField label='Weight' value={profileDataState['weight']} onModify={setIsHovered} onUpdate={handleUpdate} />
+                            <ProfileField label='Goal Weight' value={profileDataState['goalWeight']} onModify={setIsHovered} onUpdate={handleUpdate} />
+                            <ProfileField label='Height' value={profileDataState['height']} onModify={setIsHovered} onUpdate={handleUpdate} />
+                            <ProfileField label='Activity Level' value={profileDataState['activityLevel']} onModify={setIsHovered} onUpdate={handleUpdate} />
                         </div>
                     </div>
                 </>

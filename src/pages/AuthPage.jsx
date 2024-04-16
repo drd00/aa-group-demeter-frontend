@@ -58,7 +58,7 @@ const AuthPage = () => {
             await signInWithEmailAndPassword(auth, emailState, passwordState);
             // 仅在登录成功后设置状态和导航
             setLoggedIn(true);
-            _setUserState(true); // 确保这个状态更新的逻辑是正确的
+            //_setUserState(auth); // 确保这个状态更新的逻辑是正确的
             navHome();
         } catch (err) {
             if (err instanceof Error) {

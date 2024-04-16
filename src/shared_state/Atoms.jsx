@@ -1,20 +1,24 @@
-import { atom } from 'recoil';
+import { atom, selector } from 'recoil';
 
 export const userState = atom({
     key: 'user',
-    default: '',
+    default: null,
 });
 
 export const profileDataState = atom({
     key: 'profileData',
-    default: {
-        'First Name': '',
-        'Last Name': '',
-        'Age': '',
-        'Weight': '',
-        'Height': '',
-        'Goal Weight': '',
-        'Primary goal': '',
-        'Activity Level': '',
-    },
+    default: null,
+});
+
+export const loadingState = atom({
+    key: 'loadingState',
+    default: true,
+});
+
+export const isLoadingSelector = selector({
+    key: 'isLoadingSelector',
+    get: ({ get }) => {
+        const loadings = get(loadingState);
+        return loadings.includes(true);
+    }
 });
