@@ -2,11 +2,23 @@ import { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
 import useAuthenticatedRequest from '../hooks/useAuthenticatedRequest';
+import useDebounce from '../hooks/useDebounce';
+import { userState as userAtom } from '../shared_state/Atoms';
+import { useRecoilValue } from 'recoil';
+import { useNavigate } from 'react-router-dom';
 
 const HomePage = () => {
-
+    const nav = useNavigate();
     const [searchTerm, setSearchTerm] = useState('');
     const { makeRequest } = useAuthenticatedRequest();
+    const user = useRecoilValue(userAtom);
+    const debouncedUser = useDebounce(user, 500);
+
+    useEffect(() => {
+        if (debouncedUser === null) {
+            nav('/landing');
+        }
+    }, [debouncedUser]);
 
     const [diaryEntries, setDiaryEntries] = useState([]);
     useEffect(() => {

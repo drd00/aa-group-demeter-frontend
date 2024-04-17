@@ -14,6 +14,7 @@ import { userState as userAtom, profileDataState as profileAtom, loadingState } 
 import InitialSetup from './pages/InitialSetup.jsx';
 import { useEffect } from 'react';
 import useDebounce from './hooks/useDebounce.jsx';
+import LandingPage from './pages/LandingPage.jsx';
 
 function App() {
   const profile = useRecoilValue(profileAtom);
@@ -28,6 +29,8 @@ function App() {
   useEffect(() => {
     if (!debouncedLoading && debouncedProfile === null && debouncedUser !== null) {
       nav('/initial-setup');
+    } else if (debouncedUser === null) {
+      nav('/landing');
     } else {
       nav('/');
     }
@@ -68,6 +71,7 @@ function App() {
         <Route path='/settings' element={<SettingsPage />} />
         <Route path='/profile' element={<ProfilePage />} />
         <Route path='/search' element={<SearchPage />} />
+        <Route path='/landing' element={<LandingPage />} />
       </Routes>
     </>
   );

@@ -14,12 +14,18 @@ const NavMenu = ({ onLogout }) => {
                             <div>
                                 <Link to='/' className='flex items-center py-5 px-2 text-gray-800 hover:text-gray-600 no-underline text-xl'>FitAssist</Link>
                             </div>
-                            <div className='hidden md:flex items-center space-x-1'>
-                                <Link to='/profile' className='py-5 px-3 hover:text-gray-600'>Profile</Link>
-                            </div>
-                            <div className='hidden md:flex items-center space-x-1'>
-                                <Link to='/settings' className='py-5 px-3 hover:text-gray-600'>Settings</Link>
-                            </div>
+                            {userState && (<>
+                                 <div className='hidden md:flex items-center space-x-1'>
+                                    <Link to='/search' className='py-5 px-3 hover:text-gray-600'>Search</Link>
+                                </div>
+                                <div className='hidden md:flex items-center space-x-1'>
+                                    <Link to='/profile' className='py-5 px-3 hover:text-gray-600'>Profile</Link>
+                                </div>
+                                <div className='hidden md:flex items-center space-x-1'>
+                                    <Link to='/settings' className='py-5 px-3 hover:text-gray-600'>Settings</Link>
+                                </div>
+                            </>
+                            )}
                         </div>
                         <div className='hidden md:flex items-center space-x-1'>
                             {!userState && (
