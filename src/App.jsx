@@ -6,26 +6,32 @@ import LoadingSpinner from './components/LoadingSpinner';
 import ProfilePage from './pages/ProfilePage';
 import SearchPage from './pages/SearchPage';
 import NavMenu from './components/NavMenu';
-import {signOut} from 'firebase/auth';
+import { signOut } from 'firebase/auth';
 import auth from './auth/FirebaseConfig.js';
-import {useRecoilState} from 'recoil';
+import { useRecoilState } from 'recoil';
 import { useRecoilValue } from 'recoil';
 import { userState as userAtom, profileDataState as profileAtom, loadingState } from './shared_state/Atoms.jsx';
 import InitialSetup from './pages/InitialSetup.jsx';
-import { useEffect, useState } from 'react';
-import AuthProvider from './auth/AuthProvider.jsx';
+import { useEffect } from 'react';
+import useDebounce from './hooks/useDebounce.jsx';
 
 function App() {
   const profile = useRecoilValue(profileAtom);
   const user = useRecoilValue(userAtom);
-  const [ loading, setLoading ]= useRecoilState(loadingState);
+  const [ loading, _setLoading ]= useRecoilState(loadingState);
   const nav = useNavigate();
 
+  const debouncedUser = useDebounce(user, 500);
+  const debouncedProfile = useDebounce(profile, 500);
+  const debouncedLoading = useDebounce(loading, 500);
+
   useEffect(() => {
-    if (!loading && profile === null && user !== null) {
+    if (!debouncedLoading && debouncedProfile === null && debouncedUser !== null) {
       nav('/initial-setup');
+    } else {
+      nav('/');
     }
-  }, [loading, profile, user, nav]);
+  }, [debouncedLoading, debouncedProfile, debouncedUser]);
 
   const [_userState, setUserState] = useRecoilState(userAtom);
   function navHome() {
@@ -49,7 +55,6 @@ function App() {
   };
 
   if (loading) {
-    console.log(`Loading: ${loading}.`);
     return (<LoadingSpinner />);
   }
 
@@ -66,32 +71,6 @@ function App() {
       </Routes>
     </>
   );
-
-  // return (
-  //   <>
-  //     <AuthProvider>
-  //         <>
-  //             {userState && profileDataEmpty ? (
-  //               <Routes>
-  //               <Route path='/' element={<InitialSetup onSave={async (e) => {await saveUserData(e);}} onSignOut={handleLogout} />} />
-  //               </Routes>
-  //             ) : (
-  //               <>
-  //                 <NavMenu onLogout={handleLogout}/>
-  //                 <Routes>
-  //                   <Route path='/' element={<HomePage />} />
-  //                   <Route path='/auth' element={<AuthPage />} />
-  //                   <Route path='/settings' element={<SettingsPage />} />
-  //                   <Route path='/profile' element={<ProfilePage />} />
-  //                   <Route path='/search' element={<SearchPage />} />
-  //                 </Routes>
-  //                 </>
-  //             )}
-  //         </>
-  //     </AuthProvider>
-  //   </>
-  // );
 }
-
 
 export default App;

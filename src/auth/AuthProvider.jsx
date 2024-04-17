@@ -15,6 +15,12 @@ const AuthProvider = ( { children } ) => {
     const { makeRequest } = useAuthenticatedRequest();
 
     useEffect(() => {
+        async function fetchProfile() {
+            const response = await makeRequest('http://localhost:8000/profile', 'GET', null);
+
+            return response;
+        }
+
         setLoading(true);
         const unsubscribe = onAuthStateChanged(auth, async (user) => {
             if (user) {
@@ -40,12 +46,6 @@ const AuthProvider = ( { children } ) => {
 
         return () => unsubscribe();
     }, [setUser, setProfile, setLoading]);
-
-    async function fetchProfile() {
-        const response = await makeRequest('http://localhost:8000/profile', 'GET', null);
-
-        return response;
-    }
 
     return (
         <>

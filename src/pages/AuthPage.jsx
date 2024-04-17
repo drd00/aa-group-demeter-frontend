@@ -2,9 +2,9 @@ import {useRecoilState} from 'recoil';
 import {useNavigate} from 'react-router-dom';
 import {useEffect, useState} from 'react';
 import auth from '../auth/FirebaseConfig';
+import { userState as userAtom, loadingState } from '../shared_state/Atoms';
+import { useSetRecoilState } from 'recoil';
 import {createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut} from 'firebase/auth';
-import {userState as userAtom} from '../shared_state/Atoms';
-
 
 const AuthPage = () => {
     const [userState, _setUserState] = useRecoilState(userAtom);
@@ -13,6 +13,7 @@ const AuthPage = () => {
     const [showLogin, setShowLogin] = useState(true);
     const [showSignUp, setShowSignUp] = useState(false);
     const [loggedIn, setLoggedIn] = useState(false); // 新增：用户登录状态
+    const setLoading = useSetRecoilState(loadingState);
     const [confirmPassword, setConfirmPassword] = useState('');
     const nav = useNavigate();
 
@@ -35,30 +36,38 @@ const AuthPage = () => {
             clearForm();
             return; // 提前返回，不继续执行注册
         }
+
+        setLoading(true);
         try {
             await createUserWithEmailAndPassword(auth, emailState, passwordState);
             await signInWithEmailAndPassword(auth, emailState, passwordState);
-            navHome();
+            
         } catch (err) {
             if (err instanceof Error) {
                 alert(`Sign-up error: ${err.message}`);
                 clearForm();
-                return; // 提前返回，不继续执行注册
             }
+            setLoading(false);
+            return;
         }
 
         clearForm();
+        setLoading(false);
         setShowSignUp(false);
         setShowLogin(false);
+        navHome();
     }
 
     async function logIn() {
         console.log(passwordState); // 调试：查看提交时的密码状态
+
+        setLoading(true);
         try {
             await signInWithEmailAndPassword(auth, emailState, passwordState);
+
             // 仅在登录成功后设置状态和导航
             setLoggedIn(true);
-            //_setUserState(auth); // 确保这个状态更新的逻辑是正确的
+            setLoading(false);
             navHome();
         } catch (err) {
             if (err instanceof Error) {
@@ -66,6 +75,7 @@ const AuthPage = () => {
             }
             // 可能需要在这里处理登录失败的状态，比如清除表单或更新UI提示用户
         }
+        setLoading(false);
     }
 
     function clearForm() {

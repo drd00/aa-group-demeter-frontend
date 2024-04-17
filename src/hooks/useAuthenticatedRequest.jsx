@@ -25,9 +25,6 @@ const useAuthenticatedRequest = () => {
                         headers: {
                             Authorization: `Bearer ${idToken}`,
                         },
-                        params: {
-                            uid: user.uid,
-                        },
                     });
                     break;
                 case 'POST':

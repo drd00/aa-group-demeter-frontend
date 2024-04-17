@@ -53,8 +53,8 @@ function ProfileField( { label, value, onModify, onUpdate } ) {
 }
 
 ProfileField.propTypes = {
-    label: PropTypes.string.isRequired,
-    value: PropTypes.string.isRequired,
+    label: PropTypes.string,
+    value: PropTypes.any,
     onModify: PropTypes.func,
     onUpdate: PropTypes.func.isRequired,
 };

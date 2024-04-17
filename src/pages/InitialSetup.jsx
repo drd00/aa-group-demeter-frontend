@@ -1,16 +1,14 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import PropTypes from 'prop-types';
-import { useRecoilState } from 'recoil';
 import { useSetRecoilState } from 'recoil';
-import { userState as userAtom } from '../shared_state/Atoms';
-import { useRecoilValue } from 'recoil';
+import { loadingState } from '../shared_state/Atoms';
 import { useNavigate } from 'react-router-dom';
 import { profileDataState as profileAtom } from '../shared_state/Atoms';
 import useAuthenticatedRequest from '../hooks/useAuthenticatedRequest';
 
 const InitialSetup = ({ onSignOut }) => {
     const setProfile = useSetRecoilState(profileAtom);
-    const userState = useRecoilValue(userAtom);
+    const setLoading = useSetRecoilState(loadingState);
     const { makeRequest } = useAuthenticatedRequest();
     const nav = useNavigate();
 
@@ -32,14 +30,11 @@ const InitialSetup = ({ onSignOut }) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        
-        const requestData = {
-            ...formData,
-            uid: userState.uid
-        };
 
         try {
-            const response = await makeRequest('http://localhost:8000/profile', 'POST', JSON.stringify(requestData));
+            setLoading(true);
+            const response = await makeRequest('http://localhost:8000/profile', 'POST', JSON.stringify(formData));
+            setLoading(false);
 
             if (response !== null) {
                 setProfile(response.data);
