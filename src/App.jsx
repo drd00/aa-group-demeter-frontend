@@ -72,6 +72,7 @@ function App() {
         <Route path='/profile' element={<ProfilePage />} />
         <Route path='/search' element={<SearchPage />} />
         <Route path='/landing' element={<LandingPage />} />
+        <Route path='/settings' element={<SettingsPage />} />
       </Routes>
     </>
   );
