@@ -23,9 +23,9 @@ const HomePage = () => {
     const [diaryEntries, setDiaryEntries] = useState([]);
     useEffect(() => {
         async function fetchDiaryEntries() {
-            const response = await fetch('http://localhost:8000/diary'); // change to backend api
-            if (response.ok) {
-                const data = await response.json();
+            const response = await makeRequest('http://localhost:8000/diary', 'GET'); // change to backend api
+            if (response.status === 200) {
+                const data = response.data;
                 setDiaryEntries(data); // Set diaryEntries directly to the received data
             } else {
                 // Handle HTTP error response
@@ -35,25 +35,6 @@ const HomePage = () => {
         fetchDiaryEntries();
     }, []);
 
-
-    // fix this stuff
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        if (!searchTerm) {
-            return;
-        }
-
-        // Send a request to the backend to display information about a food item of interest
-        const url = `http://localhost:8000/api/searchfood/${encodeURIComponent(searchTerm)}`;
-
-        let response = await makeRequest(url, 'GET', null);
-
-        if (response.status === 200) {
-            console.log('Food item found:', response.data);
-            // Update the UI with the found food item
-            // setFoodItem(response.data);
-        }
-    };
     const styles = {
         container: {
             background: '#FFF',
