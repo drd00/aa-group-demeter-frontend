@@ -9,15 +9,15 @@ const SettingsPage = () => {
     useEffect(() => {
         const fetchSettings = async () => {
             try {
-                const response = await fetch('/api/settings/:uid'); // Replace :uid with actual user ID
+                const response = await fetch('/api/default-settings');
                 if (response.ok) {
                     const settingsData = await response.json();
                     setSettings(settingsData);
                 } else {
-                    setError('Failed to fetch settings');
+                    setError('Failed to fetch default settings');
                 }
             } catch (error) {
-                setError('Error fetching settings');
+                setError('Error fetching default settings');
             } finally {
                 setLoading(false);
             }

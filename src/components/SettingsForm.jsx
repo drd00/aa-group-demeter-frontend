@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 
+
+
+
 const SettingsForm = ({ settings }) => {
     // Destructure settings object to extract individual settings
     const { uid, calorie_compensation, protein_goal, display_calories, display_protein, display_fat, display_carbs } = settings;
