@@ -10,6 +10,11 @@ export const profileDataState = atom({
     default: null,
 });
 
+export const settingsState = atom({
+    key: 'settings',
+    default: null,
+});
+
 export const loadingState = atom({
     key: 'loadingState',
     default: true,
@@ -22,3 +27,4 @@ export const isLoadingSelector = selector({
         return loadings.includes(true);
     }
 });
+

@@ -1,30 +1,39 @@
 import React, { useState, useEffect } from 'react';
 import SettingsForm from '../components/SettingsForm';
+import { settingsState as settingsAtom } from '../shared_state/Atoms';
+import { useRecoilState } from 'recoil';
+import useAuthenticatedRequest from '../hooks/useAuthenticatedRequest';
 
 const SettingsPage = () => {
+    const [settingsState, setSettingsState] = useRecoilState(settingsAtom);
     const [loading, setLoading] = useState(true);
     const [settings, setSettings] = useState(null);
     const [error, setError] = useState(null);
+    const { makeRequest } = useAuthenticatedRequest();
 
-    useEffect(() => {
-        const fetchSettings = async () => {
-            try {
-                const response = await fetch('/api/default-settings');
-                if (response.ok) {
-                    const settingsData = await response.json();
-                    setSettings(settingsData);
-                } else {
-                    setError('Failed to fetch default settings');
-                }
-            } catch (error) {
-                setError('Error fetching default settings');
-            } finally {
-                setLoading(false);
-            }
-        };
+    // useEffect(() => {
+    //     const fetchSettings = async () => {
+    //         try {
+    //             const response = await makeRequest('http://localhost:8000/settings');
+    //             if (response.ok) {
+    //                 const settingsData = response.data;
+    //                 setSettings(settingsData);
+    //             } else {
+    //                 setError('Failed to fetch default settings');
+    //             }
+    //         } catch (error) {
+    //             setError('Error fetching default settings');
+    //         } finally {
+    //             setLoading(false);
+    //         }
+    //     };
 
-        fetchSettings();
-    }, []);
+    //     fetchSettings();
+    // }, []);
+
+    // const handleUpdate = async () => {
+
+    // }
 
     return (
         <div className="container mx-auto px-4 py-8">
@@ -34,7 +43,7 @@ const SettingsPage = () => {
             ) : error ? (
                 <p>{error}</p>
             ) : settings ? (
-                <SettingsForm settings={settings} />
+                <SettingsForm settings={settingsState} />
             ) : (
                 <p>No settings found.</p>
             )}
