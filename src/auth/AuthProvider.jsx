@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import { useEffect } from 'react';
 import { useSetRecoilState } from 'recoil';
 import { useRecoilState } from 'recoil';
-import { userState as userAtom, profileDataState as profileAtom, loadingState } from '../shared_state/Atoms';
+import { userState as userAtom, profileDataState as profileAtom, settingsState as settingsAtom, loadingState } from '../shared_state/Atoms';
 import { onAuthStateChanged } from 'firebase/auth';
 import useAuthenticatedRequest from '../hooks/useAuthenticatedRequest';
 import auth from './FirebaseConfig';
@@ -10,6 +10,7 @@ import auth from './FirebaseConfig';
 const AuthProvider = ( { children } ) => {
     const setUser = useSetRecoilState(userAtom);
     const setProfile = useSetRecoilState(profileAtom);
+    const setSettings = useSetRecoilState(settingsAtom);
     const [_loading, setLoading] = useRecoilState(loadingState);
 
     const { makeRequest } = useAuthenticatedRequest();
@@ -21,12 +22,19 @@ const AuthProvider = ( { children } ) => {
             return response;
         }
 
+        async function fetchSettings() {
+            const response = await makeRequest('http://localhost:8000/settings', 'GET', null);
+
+            return response;
+        }
+
         setLoading(true);
         const unsubscribe = onAuthStateChanged(auth, async (user) => {
             if (user) {
                 setUser({ email: user.email, uid: user.uid });
+                // Fetch profile data
                 try {
-                    const response = await fetchProfile(user.uid);
+                    const response = await fetchProfile();
                     if (response !== null) {
                         setProfile(response.data);
                     } else {
@@ -34,6 +42,20 @@ const AuthProvider = ( { children } ) => {
                     }
                 } catch (error) {
                     setProfile(null);
+                } finally {
+                    setLoading(false);
+                }
+
+                // Fetch settings data
+                try {
+                    const response = await fetchSettings();
+                    if (response !== null) {
+                        setSettings(response.data);
+                    } else {
+                        setSettings(null);
+                    }
+                } catch (error) {
+                    setSettings(null);
                 } finally {
                     setLoading(false);
                 }
@@ -45,7 +67,7 @@ const AuthProvider = ( { children } ) => {
         });
 
         return () => unsubscribe();
-    }, [setUser, setProfile, setLoading]);
+    }, [setUser, setProfile, setSettings, setLoading]);
 
     return (
         <>

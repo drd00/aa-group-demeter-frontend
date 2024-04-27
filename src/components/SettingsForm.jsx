@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-
-
-
+import useAuthenticatedRequest from '../hooks/useAuthenticatedRequest';
 
 const SettingsForm = ({ settings }) => {
     // Destructure settings object to extract individual settings
     const { uid, calorie_compensation, protein_goal, display_calories, display_protein, display_fat, display_carbs } = settings;
+    const { makeRequest } = useAuthenticatedRequest();
 
     // Initialize state variables with settings values
     const [calorieCompensation, setCalorieCompensation] = useState(calorie_compensation);
@@ -20,21 +19,30 @@ const SettingsForm = ({ settings }) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            // Submit form data to backend API
-            const response = await fetch(`/api/settings/${uid}`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    calorie_compensation: calorieCompensation,
-                    protein_goal: proteinGoal,
-                    display_calories: displayCalories,
-                    display_protein: displayProtein,
-                    display_fat: displayFat,
-                    display_carbs: displayCarbs
-                })
+            const postBody = JSON.stringify({
+                calorie_compensation: calorieCompensation,
+                protein_goal: proteinGoal,
+                display_calories: displayCalories,
+                display_protein: displayProtein,
+                display_fat: displayFat,
+                display_carbs: displayCarbs
+
             });
+            const response = await makeRequest('http://localhost:8000/settings', 'POST', JSON.stringify(postBody));
+            // const response = await fetch(`/api/settings/${uid}`, {
+            //     method: 'PUT',
+            //     headers: {
+            //         'Content-Type': 'application/json'
+            //     },
+            //     body: JSON.stringify({
+            //         calorie_compensation: calorieCompensation,
+            //         protein_goal: proteinGoal,
+            //         display_calories: displayCalories,
+            //         display_protein: displayProtein,
+            //         display_fat: displayFat,
+            //         display_carbs: displayCarbs
+            //     })
+            // });
             if (response.ok) {
                 // Handle successful response (e.g., show success message)
             } else {
