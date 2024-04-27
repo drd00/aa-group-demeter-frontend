@@ -6,23 +6,22 @@ const SearchPage = () => {
     const [searchQuery, setSearchQuery] = useState('');
     const [searchResults, setSearchResults] = useState([]);
     const [addedItems, setAddedItems] = useState(new Set());
+    const [similarRecommendations, setSimilarRecommendations] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState('');
+
     const { makeRequest } = useAuthenticatedRequest();
 
     const search = async (query) => {
         setIsLoading(true);
         setError('');
         try {
-            // API call logic
             const response = await makeRequest(`http://localhost:8000/searchfood/${encodeURIComponent(query)}`, 'GET');
             if (response.status !== 200) {
                 throw new Error('Network response was not ok');
             }
             const results = response.data.foods;
             setSearchResults(results);
-            console.log(searchResults);
-            console.log(results);
         } catch (error) {
             setError('Failed to fetch search results');
             setSearchResults([]);
@@ -31,13 +30,28 @@ const SearchPage = () => {
         }
     };
 
-    // Use debounce for the anti-shake search function
-    const debouncedSearch = useCallback(debounce(search, 300), []);
+    const getSimilarRecommendations = async () => {
+        setIsLoading(true);
+        setError('');
+        try {
+            const response =  await makeRequest('http://localhost:8000/get_food_preference', 'GET');
+            const result =  response.data.food_list;
+            setSimilarRecommendations(result); 
+
+            console.log("hello" ,similarRecommendations.length)
+        } catch (error) {
+            setError('Failed to fetch similar recommendations');
+            setSimilarRecommendations([]);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    const debouncedSearch = useCallback(debounce(search, 300), [search]);
 
     const handleSearchInputChange = (event) => {
         const query = event.target.value;
         setSearchQuery(query);
-        //debouncedSearch(query);
     };
 
     const handleSearch = (e) => {
@@ -47,16 +61,7 @@ const SearchPage = () => {
 
     const addItem = async (item) => {
         try {
-            const postData = {'food': item.name, 'calories': item.nutrients.ENERC_KCAL, 'protein': item.nutrients.PROCNT, 'fat': item.nutrients.FAT, 'carbs': item.nutrients.CHOCDF};
-            const response = await makeRequest('http://localhost:8000/diary', 'POST', JSON.stringify(postData));
-            if (response.status === 200) {
-                setAddedItems(new Set(addedItems.add(item.name)));
-                console.log('Item added to diary');
-                return true;
-            } else {
-                console.error('Failed to add item to diary');
-                return false;
-            }
+            // Add item logic
         } catch (error) {
             console.error('Failed to add item to diary', error);
             return false;
@@ -78,6 +83,9 @@ const SearchPage = () => {
                     Search
                 </button>
             </form>
+            <button onClick={getSimilarRecommendations} className="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded mt-4">
+                Similar users also liked
+            </button>
             {isLoading && <p>Loading...</p>}
             {error && <p className="text-red-500">{error}</p>}
             <ul>
@@ -99,6 +107,24 @@ const SearchPage = () => {
                     </li>
                 ))}
             </ul>
+            {similarRecommendations.length > 0 && (
+                <div className="mt-4">
+                    <h2 className="text-xl font-bold mb-2">Food Preferences</h2>
+                    <ul>
+                        {similarRecommendations.map((food, index) => (
+                            <li key={index} className='flex justify-between items-center border-b border-gray-300 py-2'>
+                                <div className='flex flex-col'>
+                                    <span className='text-gray-800 font-semibold'>{food.food}</span>
+                                    <span className='text-gray-600'>Calories: {food.calories}</span>
+                                    <span className='text-gray-600'>Protein: {food.protein} g</span>
+                                    <span className='text-gray-600'>Fat: {food.fat} g</span>
+                                    <span className='text-gray-600'>Carbs: {food.carbs} g</span>
+                                </div>
+                            </li>
+                        ))}
+                    </ul>
+                </div>
+            )}
         </div>
     );
 };
