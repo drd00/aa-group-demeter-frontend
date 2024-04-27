@@ -3,16 +3,19 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
 import useAuthenticatedRequest from '../hooks/useAuthenticatedRequest';
 import useDebounce from '../hooks/useDebounce';
-import { userState as userAtom } from '../shared_state/Atoms';
+import { profileDataState as profileAtom, userState as userAtom } from '../shared_state/Atoms';
 import { useRecoilValue } from 'recoil';
 import { useNavigate } from 'react-router-dom';
 
 const HomePage = () => {
     const nav = useNavigate();
-    const [searchTerm, setSearchTerm] = useState('');
     const { makeRequest } = useAuthenticatedRequest();
     const user = useRecoilValue(userAtom);
+    const profileData = useRecoilValue(profileAtom);
     const debouncedUser = useDebounce(user, 500);
+
+    const [diaryEntries, setDiaryEntries] = useState([]);
+    const [recommendations, setRecommendations] = useState([]);
 
     useEffect(() => {
         if (debouncedUser === null) {
@@ -20,10 +23,9 @@ const HomePage = () => {
         }
     }, [debouncedUser]);
 
-    const [diaryEntries, setDiaryEntries] = useState([]);
     useEffect(() => {
         async function fetchDiaryEntries() {
-            const response = await makeRequest('http://localhost:8000/diary', 'GET'); // change to backend api
+            const response = await makeRequest('http://localhost:8000/diary', 'GET');
             if (response.status === 200) {
                 const data = response.data;
                 setDiaryEntries(data); // Set diaryEntries directly to the received data
@@ -32,7 +34,19 @@ const HomePage = () => {
                 console.error('HTTP Error: ', response.status);
             }
         }
+
+        async function fetchRecommendations() {
+            const response = await makeRequest('http://localhost:8000/prob-recommendations', 'GET');
+            if (response.status === 200) {
+                const data = response.data;
+                console.log(data);
+                setRecommendations(data.recommendations);
+            } else {
+                console.error('HTTP Error: ', response.status);
+            }
+        }
         fetchDiaryEntries();
+        fetchRecommendations();
     }, []);
 
     const styles = {
@@ -76,31 +90,60 @@ const HomePage = () => {
         }
     };
     return (
-        <div style={styles.container}>
-            {/* Search box and other UI elements... */}
+        <>
+            <h1 className='text-center text-3xl font-bold my-5'>Hello, {profileData['firstName']}. Here&apos;s what&apos;s on today&apos;s diary.</h1>
+            <div style={styles.container}>
+                {/* Search box and other UI elements... */}
 
-            <div style={styles.header}>Today Diary</div>
+                <div style={styles.header}>Today Diary</div>
+                    <table style={styles.table}>
+                        <thead>
+                        <tr>
+                            <th style={styles.th}>Date</th>
+                            <th style={styles.th}>Food</th>
+                            <th style={styles.th}>Calories</th>
+                            <th style={styles.th}>Protein</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                            {diaryEntries.map(entry => (
+                                <tr key={entry.uid}>
+                                <td style={styles.td}>{entry.date}</td>
+                                <td style={styles.td}>{entry.food}</td>
+                                <td style={styles.td}>{entry.calories}</td>
+                                <td style={styles.td}>{entry.protein}</td>
+                            </tr>
+                            ))}
+                    </tbody>
+                </table>
+            </div>
+            <div className="text-center mt-24 mb-8">  {/* Increased top margin */}
+    <div className="uppercase text-gray-700 font-bold">More Recommendations</div>
+    <div className="border-t border-gray-300 mt-2 mx-auto w-1/4"></div>  {/* Small separator */}
+</div>
+            <h2 className='text-center text-xl font-bold mt-10'>Some recommendations, based on your past activity and profile.</h2>
+
+            <h4 className='text-center text-sm font-light mt-10 mb-5'>We consider the your weight, height and app activity to help you out.</h4>
+        <div style={styles.container}>
+            <div style={styles.header}>Recommendations</div>
             <table style={styles.table}>
                 <thead>
                 <tr>
-                    <th style={styles.th}>Date</th>
-                    <th style={styles.th}>Food</th>
-                    <th style={styles.th}>Calories</th>
-                    <th style={styles.th}>Protein</th>
+                    <th style={styles.th}>Product</th>
+                    <th style={styles.th}>Benefits</th>
                 </tr>
                 </thead>
                 <tbody>
-                {diaryEntries.map(entry => (
-                    <tr key={entry.uid}>
-                    <td style={styles.td}>{entry.date}</td>
-                        <td style={styles.td}>{entry.food}</td>
-                        <td style={styles.td}>{entry.calories}</td>
-                        <td style={styles.td}>{entry.protein}</td>
-                    </tr>
-                ))}
+                    {recommendations.map((rec, index) => (
+                        <tr key={index}>
+                            <td style={styles.td}>{rec[0]}</td>
+                            <td style={styles.td}>{rec[1]}</td>
+                        </tr>
+                    ))}
                 </tbody>
             </table>
         </div>
+        </>
     );
 };
 
