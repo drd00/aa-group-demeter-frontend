@@ -91,7 +91,7 @@ const HomePage = () => {
     };
     return (
         <>
-            <h1 className='text-center text-3xl font-bold my-5'>Hello, {profileData['firstName']}. Here&apos;s what&apos;s on today&apos;s diary.</h1>
+            <h1 className='text-center text-3xl font-bold my-5'>Hello, {profileData === null ? '' : profileData['firstName']}. Here&apos;s what&apos;s on today&apos;s diary.</h1>
             <div style={styles.container}>
                 {/* Search box and other UI elements... */}
 
