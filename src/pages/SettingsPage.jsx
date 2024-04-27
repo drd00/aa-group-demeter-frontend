@@ -34,19 +34,10 @@ const SettingsPage = () => {
     // const handleUpdate = async () => {
 
     // }
-
     return (
         <div className="container mx-auto px-4 py-8">
             <h1 className="text-xl font-bold mb-6">Settings</h1>
-            {loading ? (
-                <p>Loading...</p>
-            ) : error ? (
-                <p>{error}</p>
-            ) : settings ? (
-                <SettingsForm settings={settingsState} />
-            ) : (
-                <p>No settings found.</p>
-            )}
+            <SettingsForm settings={settingsState} />
         </div>
     );
 };

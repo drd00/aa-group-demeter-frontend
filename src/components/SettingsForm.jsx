@@ -43,9 +43,11 @@ const SettingsForm = ({ settings }) => {
             //         display_carbs: displayCarbs
             //     })
             // });
-            if (response.ok) {
+            if (response !== null && response.status === 200) {
+                console.log('Settings updated successfully');
                 // Handle successful response (e.g., show success message)
             } else {
+                console.log('Failed to update settings');
                 // Handle error response (e.g., show error message)
             }
         } catch (error) {
