@@ -61,7 +61,16 @@ const SearchPage = () => {
 
     const addItem = async (item) => {
         try {
-            // Add item logic
+            const postData = {'food': item.name, 'calories': item.nutrients.ENERC_KCAL, 'protein': item.nutrients.PROCNT, 'fat': item.nutrients.FAT, 'carbs': item.nutrients.CHOCDF};
+            const response = await makeRequest('http://localhost:8000/diary', 'POST', JSON.stringify(postData));
+            if (response.status === 200) {
+                setAddedItems(new Set(addedItems.add(item.name)));
+                console.log('Item added to diary');
+                return true;
+            } else {
+                console.error('Failed to add item to diary');
+                return false;
+            }
         } catch (error) {
             console.error('Failed to add item to diary', error);
             return false;
